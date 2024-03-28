@@ -5,7 +5,7 @@ const storage = multer.diskStorage({
         cb(null,"./public/temp")    // we keep the file inside temp folder inside public
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname)  //see more options
+        cb(null, file.originalname)  //see more options on docs
     }
 })
 
