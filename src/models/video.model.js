@@ -37,7 +37,7 @@ const videoSchema=new Schema(
         },
         owner:{
             type:Schema.Types.ObjectId,
-            ref:"User"     //!this name is same as what we have exported from User model
+            ref:"User"     //user created in user model
         }
     }
     ,{timestamps:true})
