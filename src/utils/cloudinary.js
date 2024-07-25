@@ -7,6 +7,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+//localfilepath : server pr jo upload kiya hai uska path
 const uploadOnCloudinary=async(localFilePath)=>{
     try{
         if(!localFilePath){
