@@ -35,7 +35,7 @@ const app=express();
 function connnectD(){
 
 }
-//!semicolon because problem aa jati hai
+!semicolon because problem aa jati hai
 ;(async()=>{
     try{
        await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
@@ -50,7 +50,7 @@ function connnectD(){
     }
     catch(error){
         console.log("ERROR : ",error)
-        throw err
+        throw err             //!used to give custom error
     }
 
 })()
