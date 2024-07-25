@@ -1,1 +1,1 @@
-export const DB_NAME="videotube"
+export const DB_NAME="videotube"       //!Because name of Database is not sensitive information : but we can also put it in env file
