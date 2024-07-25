@@ -1,7 +1,8 @@
+import { Schema } from "mongoose"
 import jwt from "jsonwebtoken"
 import bcrypt from 'bcrypt'
 const userSchema = new Schema({
-    id: {
+    username: {
         type: String,
         required: true,
         unique: true,
@@ -29,6 +30,7 @@ const userSchema = new Schema({
     coverImage: {
         type: String,        //cloudinary url ho toh bhi thik hai nhi ho toh bhi thik hai
     },
+    // watch history -> jo used video dekh lega usko push krte jayenge
     watchHistory: [
         {
             type: Schema.Types.ObjectId,
@@ -45,11 +47,11 @@ const userSchema = new Schema({
 }, { timestamps: true })
 
 //!here we don't use arrow function because this ka reference nhi hota uske paas
-//!async because algorithm of encryption takes time
-//!take next because pre is a middleware
-//!this function will run everytime we save anything so we have to add condition ki jb password change ho tbhi change ho
+//async because algorithm of encryption takes time
+//take next because pre is a middleware
+//below function will run everytime we save anything so add condition ki jb password change ho tbhi change ho
 userSchema.pre("save", async function (next) {
-    //!yhn password field string mein hi pass krna pdta hai
+    //!we have to provide password field in string -> necessary
     if (!this.isModified("password")) {
         return next();
     }
@@ -57,8 +59,12 @@ userSchema.pre("save", async function (next) {
     next()
 })
 
-//!is method mein jitne cahe methods add kr do 
-//!password check krna hai ki shi hai ki ni
+//We can make methods like addone deleteone and so on.
+//We can make many methods as we can 
+
+//!this is to check the password stred in DB is correct or not
+//password -> clear password 
+//this.password -> stored in DB
 userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password,this.password)
 }
@@ -74,12 +80,12 @@ userSchema.methods.generateAccessToken=function(){
         }, 
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn: process.env.ACCESS_TOKEN_SECRET
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
         }
     )
 }
 userSchema.methods.generateRefreshToken=function(){
-    //!refresh token baar baar refresh hota hai tbhi hum isme km information hota hai
+    //!refresh token baar baar refresh hota hai tbhi hum isme km information rkhte hain
     return jwt.sign(
         {
             id: this.id,                  // ye hume apne database se mil hi jaegi
@@ -89,4 +95,12 @@ userSchema.methods.generateRefreshToken=function(){
     )
 }
 
-export const User = model("User", userSchema)
+export const User = mongoose.model("User", userSchema)
+
+
+
+
+/**
+ * According to the model we have not do this in this model
+ * We can't give id -> //!because ye automatically mongoDB de dega
+ */
