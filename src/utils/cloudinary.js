@@ -14,6 +14,7 @@ const uploadOnCloudinary=async(localFilePath)=>{
             return null;
         }
         //if local file present upload the file on cloudinary
+        //resource type means jpg , png and so on [auto=jo aa rha hai le lo]
         const response = await cloudinary.uploader.upload(localFilePath,{
             resource_type:"auto"
         })
