@@ -1,5 +1,8 @@
 import multer from "multer";
 
+
+//file : function mein multer ke paas hi hota hai
+//!cb : callback
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null,"./public/temp")    // we keep the file inside temp folder inside public
