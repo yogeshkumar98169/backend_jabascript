@@ -26,10 +26,18 @@ app.use(express.static("public"))   //where we keep public assets, images, favic
 app.use(cookieParser());
 
 
-//routes
+//routes ese kiya jata hai yhin import kiya jata hai companies mein
+
 import userRouter from "./routes/user.routes.js"
-//routes declaration middleware usreRouter
+
+//routes declaration middleware userRouter
 app.use("/api/v1/users",userRouter)
 //!Here url is http://localhost:8000/api/v1/users/register    -> in user.routes.js routes go to register
 
 export { app }
+
+
+/**
+ * pehle hum app.get likh rhe the because routes or controllers same file mein hote the
+ * lekin ab middle ware use kregnge because doosri file se lana hai
+ */
