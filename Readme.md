@@ -11,3 +11,11 @@ https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj)
 ```
 - app.post()  - for post request
 - app.get()   - for get
+
+
+### There are many ways to take data from postman
+- Body -> raw -> for json data
+
+- Params → but most of time body se hi lete hain
+
+- form-data → we use it to send `files with data`
