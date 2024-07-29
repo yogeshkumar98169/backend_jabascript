@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
 
+//without . bhi chl rha tha ./env
 dotenv.config({
     path:'./.env'
 })
