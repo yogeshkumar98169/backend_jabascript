@@ -3,6 +3,7 @@ import {ApiError} from "../utils/ApiError.js"
 import {User} from "../models/user.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
+
 //!We have 4 parameters err,req,res, next
 
 
@@ -45,17 +46,16 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // User.findOne({email})  //! when we have to search it using one parameter
     //Using two parameter : it will return first document matching the user
-    const existedUser=User.findOne({
+    const existedUser= await User.findOne({
         $or:[{ username }, { email }]
     })
     if(existedUser){
         throw new ApiError(409,"User with email and username already registered")
     }
-    
     //ho skta hai files ka access hai ya nhi toh //!conditionally check karo
     //!we want file first property avtar ki then uska path 
     //do it conditionally so that if not present don't make error
-    const avatarLocalPath=req.files?.avtar[0]?.path
+    const avatarLocalPath=req.files?.avatar[0]?.path
     //[0] se hi lete hai -> conditionally check because file ho bhi skti hai ya nhi
     const coverImageLocalPath=req.files?.coverImage[0]?.path
 
