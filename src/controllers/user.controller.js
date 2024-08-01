@@ -61,18 +61,16 @@ const registerUser = asyncHandler(async (req, res) => {
 
     //avatar :required field so check aaya hai ki nhi
     //cover file: not required aaye toh bhi thik na aaye toh bhi thik
-    if(!avatarLocalPath){
-        throw new ApiError(400,"Avatar file is requited")
+    //now check avatar gya hai ki ni because avatar is a required field nhi gya hoga toh database error dega
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avatar file is requited")
     }
+
 
     //upload file to cloudinary
     const avatar=await uploadOnCloudinary(avatarLocalPath)
     const coverImage=await uploadOnCloudinary(coverImageLocalPath)
 
-    //now check avatar gya hai ki ni because avatar is a required field nhi gya hoga toh database error dega
-    if (!avatarLocalPath) {
-        throw new ApiError(400, "Avatar file is requited")
-    }
     
     //!Dataabse se baat krte samay time lg skta hai and database is in another continent
     const user=await User.create({
