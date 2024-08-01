@@ -18,4 +18,6 @@ export const upload = multer({ storage })
 /**
  * at the end the storage function url de dega jhn server pe file store hui hai
  * fir yhn se url leke hum cloudinary pr upload kr denge
+ * 
+ cb(null,"./public/temp")    // we keep the file inside temp folder inside public
  */
