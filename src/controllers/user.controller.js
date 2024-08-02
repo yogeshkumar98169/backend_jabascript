@@ -55,9 +55,15 @@ const registerUser = asyncHandler(async (req, res) => {
     //ho skta hai files ka access hai ya nhi toh //!conditionally check karo
     //!we want file first property avtar ki then uska path 
     //do it conditionally so that if not present don't make error
+    console.log(req.files)
     const avatarLocalPath=req.files?.avatar[0]?.path
     //[0] se hi lete hai -> conditionally check because file ho bhi skti hai ya nhi
-    const coverImageLocalPath=req.files?.coverImage[0]?.path
+    // const coverImageLocalPath=req.files?.coverImage[0]?.path   //!undefinded bhi ho skta hai
+    //!to solver this use classic if else
+    let coverImageLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
+        coverImageLocalPath=req.files?.coverImage[0]?.path
+    }
 
     //avatar :required field so check aaya hai ki nhi
     //cover file: not required aaye toh bhi thik na aaye toh bhi thik
@@ -94,11 +100,10 @@ const registerUser = asyncHandler(async (req, res) => {
     if(!createdUser){
         throw new ApiError(500,"Something went wrong while registering a user")
     }
-    
     //now return response with creatin a object of API response class
     //!if we want to send data we can make object in json
     return res.status(201).json(
-        new ApiResponse(200,createdUser,"User Created Successfully")
+        new ApiResponse(200,"User Created Successfully")
     )
     
 })
