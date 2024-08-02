@@ -59,7 +59,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const avatarLocalPath=req.files?.avatar[0]?.path
     //[0] se hi lete hai -> conditionally check because file ho bhi skti hai ya nhi
     // const coverImageLocalPath=req.files?.coverImage[0]?.path   //!undefinded bhi ho skta hai
-    //!to solver this use classic if else
+    //!to solve this use classic if else
     let coverImageLocalPath;
     if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
         coverImageLocalPath=req.files?.coverImage[0]?.path
