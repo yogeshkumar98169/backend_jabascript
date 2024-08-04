@@ -6,6 +6,22 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 
 //!We have 4 parameters err,req,res, next
 
+const generateAccessAndRefreshTokens=async(userId)=>{
+    try{
+        const user=await User.findById(userId)
+        const accessToken=user.generateAccessToken()
+        const refreshToken=user.generateRefreshToken()
+        user.refreshToken=refreshToken           //put refresh token in user object in database
+        user.save({validateBeforeSave:false});                             //now save user object
+        //!when we save it password bhi hona hi cahiye us time so we use {validatebeforesave:false}-> means ki validate mt karo save kr do
+
+        return  {accessToken, refreshToken}
+    }
+    catch(error){
+        throw new ApiError(500,"Something went wrong while generating refresh and access token")
+    }
+}
+
 
 /**
  * Now what we do next
@@ -112,11 +128,82 @@ const registerUser = asyncHandler(async (req, res) => {
     
 })
 
-export { registerUser }
+
+
+/**
+ * req body -> data le aao
+ * username or email hai ya nhi
+ * find the user in database
+ * if user found password check karo
+ * authentication true, generate access and refresh token
+ * send them in cookies
+ * response bhej do successfully logged in
+ */
+
+
+const loginUser=asyncHandler(async(req,res)=>{
+        const {email, username,password}=req.body
+
+        if(!email && !username){
+            throw new ApiError(400,"Username or email is required")
+        }
+        //write one if you want to find using one other use query like this
+        const user=await User.findOne({
+            $or :[{username},{email}]
+        })
+
+        if(!user){
+            throw new ApiError(404,"User doesn't exist")
+        }
+        //User ke pass mongooose ke hi method honge jo humne khud bnaye hain model mein wo jo humne liya hai data usse milenge
+        const isPasswordValid=await user.isPasswordCorrect(password)
+
+        if (!isPasswordValid) { 
+            throw new ApiError(401, "Invalid user credentials")
+        }
+
+        //!make access and refresh token
+        const {accessToken,refreshToken }=await generateAccessAndRefreshTokens(user._id)
+
+        //ye humne toh bnaya becuase jb pehle bnaya tha tb token nhi the document mein
+        //the only thing we should do is to check ki ye expensive toh nhi hoga -> if expensive document update kr do na ki query maaro
+        const loggedInUser=await User.findById(user._id).select("-password -refreshToken")
+        
+
+        //send token in cookies
+        
+        const options={
+            httpOnly:true,
+            secure: true,
+            // httpOnly and secure true because cookies frontend pe change kr skte hain so we want ki server se hi modify kr ske so we do it true
+        }
+
+        return res
+        .status(200)
+        .cookie("accessToken",accessToken, options)
+        .cookie("refreshToken",refreshToken,options)
+        .json(
+            new ApiResponse(200,
+                {
+                    user:loggedInUser,accessToken, refreshToken
+                    // we send it because syd koi mobileapplicatoin develop kr rha hao whn toh cookies set nhi honge
+                },
+                "user logged in successfully"
+            ) 
+        )
+})
+
+const logoutUser=asyncHandler(async(req,res)=>{
+    /**
+     * cokkies se token htao
+     * database se bhi token hta do
+     */
+    
+})
 
 
 
-
+export { registerUser,loginUser,logoutUser }
 
 
 
